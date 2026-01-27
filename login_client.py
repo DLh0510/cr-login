@@ -1,4 +1,5 @@
 # login_client.py
+"""河南经济贸易技师学院 - 云平台登录客户端"""
 import customtkinter as ctk
 from tkinter import messagebox
 from PIL import Image
@@ -10,99 +11,144 @@ import threading
 import os
 import sys
 
-URL = "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login"
+# ============ 配置 ============
+CONFIG = {
+    "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
+    "title": "河南经济贸易技师学院",
+    "subtitle": "云平台管理系统",
+    "window_size": "400x520",
+    "logo_size": (90, 90),
+}
 
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.dirname(__file__), relative_path)
+# ============ 主题 ============
+THEME = {
+    "primary": "#1e6bb8",
+    "primary_hover": "#155a9c",
+    "bg": "#f0f4f8",
+    "card_bg": "#ffffff",
+    "text": "#1a1a2e",
+    "text_secondary": "#64748b",
+    "border": "#e2e8f0",
+    "success": "#22c55e",
+    "error": "#ef4444",
+}
 
-def login(username, password, btn, status_label):
-    btn.configure(state='disabled', text='登录中...')
-    try:
-        driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
-        driver.get(URL)
-        driver.find_element(By.ID, "admin_user").send_keys(username)
-        driver.find_element(By.ID, "admin_user_pass").send_keys(password)
-        driver.find_element(By.NAME, "login").click()
-        status_label.configure(text="✓ 登录成功", text_color="#22c55e")
-    except Exception as e:
-        status_label.configure(text="")
-        messagebox.showerror("错误", str(e))
-    finally:
-        btn.configure(state='normal', text='登  录')
+# ============ 工具函数 ============
+def resource_path(path):
+    base = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
+    return os.path.join(base, path)
 
-def on_login():
-    if not user_entry.get() or not pass_entry.get():
-        messagebox.showwarning("提示", "请输入用户名和密码")
-        return
-    threading.Thread(target=login, args=(user_entry.get(), pass_entry.get(), login_btn, status_label), daemon=True).start()
+# ============ 登录逻辑 ============
+class LoginService:
+    @staticmethod
+    def login(username, password, on_success, on_error):
+        try:
+            driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+            driver.get(CONFIG["url"])
+            driver.find_element(By.ID, "admin_user").send_keys(username)
+            driver.find_element(By.ID, "admin_user_pass").send_keys(password)
+            driver.find_element(By.NAME, "login").click()
+            on_success()
+        except Exception as e:
+            on_error(str(e))
 
-# 设置主题
-ctk.set_appearance_mode("light")
-ctk.set_default_color_theme("blue")
+# ============ UI 组件 ============
+class LoginApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self._setup_window()
+        self._create_ui()
+    
+    def _setup_window(self):
+        self.title(f"{CONFIG['title']} - {CONFIG['subtitle']}")
+        self.geometry(CONFIG["window_size"])
+        self.resizable(False, False)
+        self.configure(fg_color=THEME["bg"])
+        ctk.set_appearance_mode("light")
+    
+    def _create_ui(self):
+        # 主容器
+        container = ctk.CTkFrame(self, fg_color="transparent")
+        container.pack(expand=True, fill="both", padx=35, pady=25)
+        
+        self._create_header(container)
+        self._create_form(container)
+        self._create_footer(container)
+    
+    def _create_header(self, parent):
+        # Logo
+        try:
+            img = ctk.CTkImage(Image.open(resource_path("yjgj_foot_logo.png")), size=CONFIG["logo_size"])
+            ctk.CTkLabel(parent, image=img, text="").pack(pady=(0, 10))
+        except: pass
+        
+        # 标题
+        ctk.CTkLabel(parent, text=CONFIG["title"], font=ctk.CTkFont(size=18, weight="bold"), 
+                     text_color=THEME["primary"]).pack()
+        ctk.CTkLabel(parent, text=CONFIG["subtitle"], font=ctk.CTkFont(size=13), 
+                     text_color=THEME["text_secondary"]).pack(pady=(2, 15))
+    
+    def _create_form(self, parent):
+        # 卡片
+        card = ctk.CTkFrame(parent, corner_radius=12, fg_color=THEME["card_bg"], 
+                           border_width=1, border_color=THEME["border"])
+        card.pack(fill="x", pady=5)
+        
+        form = ctk.CTkFrame(card, fg_color="transparent")
+        form.pack(padx=25, pady=25)
+        
+        # 用户名
+        self._create_field(form, "用户名", "请输入用户名")
+        self.user_entry = self.last_entry
+        
+        # 密码
+        self._create_field(form, "密码", "请输入密码", show="●")
+        self.pass_entry = self.last_entry
+        self.pass_entry.bind('<Return>', lambda e: self._on_login())
+        
+        # 登录按钮
+        self.login_btn = ctk.CTkButton(form, text="登  录", width=260, height=42, corner_radius=8,
+                                       font=ctk.CTkFont(size=14, weight="bold"),
+                                       fg_color=THEME["primary"], hover_color=THEME["primary_hover"],
+                                       command=self._on_login)
+        self.login_btn.pack(pady=(15, 5))
+        
+        # 状态
+        self.status = ctk.CTkLabel(form, text="", font=ctk.CTkFont(size=11))
+        self.status.pack()
+    
+    def _create_field(self, parent, label, placeholder, show=None):
+        ctk.CTkLabel(parent, text=label, font=ctk.CTkFont(size=12), 
+                     text_color=THEME["text"], anchor="w").pack(fill="x", pady=(0, 4))
+        entry = ctk.CTkEntry(parent, width=260, height=40, placeholder_text=placeholder,
+                            corner_radius=6, border_color=THEME["border"], 
+                            font=ctk.CTkFont(size=12), show=show)
+        entry.pack(pady=(0, 12))
+        self.last_entry = entry
+    
+    def _create_footer(self, parent):
+        ctk.CTkLabel(parent, text="© 2024 河南经济贸易技师学院", 
+                     font=ctk.CTkFont(size=10), text_color=THEME["text_secondary"]).pack(side="bottom", pady=5)
+    
+    def _on_login(self):
+        username, password = self.user_entry.get().strip(), self.pass_entry.get().strip()
+        if not username or not password:
+            messagebox.showwarning("提示", "请输入用户名和密码")
+            return
+        
+        self.login_btn.configure(state="disabled", text="登录中...")
+        self.status.configure(text="")
+        
+        def on_success():
+            self.status.configure(text="✓ 登录成功", text_color=THEME["success"])
+            self.login_btn.configure(state="normal", text="登  录")
+        
+        def on_error(msg):
+            self.login_btn.configure(state="normal", text="登  录")
+            messagebox.showerror("错误", msg)
+        
+        threading.Thread(target=LoginService.login, args=(username, password, on_success, on_error), daemon=True).start()
 
-# 主窗口
-app = ctk.CTk()
-app.title("河南经济贸易技师学院 - 云平台登录")
-app.geometry("420x580")
-app.resizable(False, False)
-
-# 配色
-PRIMARY_BLUE = "#1e6bb8"
-DARK_BLUE = "#0d4a7c"
-
-# 主容器
-main_frame = ctk.CTkFrame(app, fg_color="transparent")
-main_frame.pack(fill="both", expand=True, padx=40, pady=30)
-
-# Logo
-try:
-    logo_img = ctk.CTkImage(Image.open(resource_path("yjgj_foot_logo.png")), size=(100, 100))
-    logo_label = ctk.CTkLabel(main_frame, image=logo_img, text="")
-    logo_label.pack(pady=(10, 5))
-except:
-    pass
-
-# 标题
-title_label = ctk.CTkLabel(main_frame, text="河南经济贸易技师学院", font=ctk.CTkFont(size=20, weight="bold"), text_color=PRIMARY_BLUE)
-title_label.pack(pady=(5, 5))
-
-subtitle_label = ctk.CTkLabel(main_frame, text="云平台管理系统", font=ctk.CTkFont(size=14), text_color="#666666")
-subtitle_label.pack(pady=(0, 25))
-
-# 登录卡片
-card = ctk.CTkFrame(main_frame, corner_radius=15, fg_color="#ffffff", border_width=1, border_color="#e0e0e0")
-card.pack(fill="x", pady=10, padx=5)
-
-inner_frame = ctk.CTkFrame(card, fg_color="transparent")
-inner_frame.pack(padx=30, pady=30)
-
-# 用户名
-user_label = ctk.CTkLabel(inner_frame, text="用户名", font=ctk.CTkFont(size=13), text_color="#333333", anchor="w")
-user_label.pack(fill="x", pady=(0, 5))
-user_entry = ctk.CTkEntry(inner_frame, width=280, height=42, placeholder_text="请输入用户名", corner_radius=8, border_color="#d0d0d0", font=ctk.CTkFont(size=13))
-user_entry.pack(pady=(0, 15))
-
-# 密码
-pass_label = ctk.CTkLabel(inner_frame, text="密码", font=ctk.CTkFont(size=13), text_color="#333333", anchor="w")
-pass_label.pack(fill="x", pady=(0, 5))
-pass_entry = ctk.CTkEntry(inner_frame, width=280, height=42, placeholder_text="请输入密码", show="●", corner_radius=8, border_color="#d0d0d0", font=ctk.CTkFont(size=13))
-pass_entry.pack(pady=(0, 20))
-pass_entry.bind('<Return>', lambda e: on_login())
-
-# 登录按钮
-login_btn = ctk.CTkButton(inner_frame, text="登  录", width=280, height=45, corner_radius=8, 
-                          font=ctk.CTkFont(size=15, weight="bold"), fg_color=PRIMARY_BLUE, 
-                          hover_color=DARK_BLUE, command=on_login)
-login_btn.pack(pady=(5, 10))
-
-# 状态标签
-status_label = ctk.CTkLabel(inner_frame, text="", font=ctk.CTkFont(size=12))
-status_label.pack()
-
-# 底部版权
-footer = ctk.CTkLabel(main_frame, text="© 2024 河南经济贸易技师学院 版权所有", font=ctk.CTkFont(size=11), text_color="#999999")
-footer.pack(side="bottom", pady=10)
-
-app.mainloop()
+# ============ 入口 ============
+if __name__ == "__main__":
+    LoginApp().mainloop()
