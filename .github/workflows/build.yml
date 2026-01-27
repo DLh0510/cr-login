@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build Multi-Platform
 
 on:
   push:
@@ -7,7 +7,20 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows
+            ext: .exe
+          - os: macos-latest
+            name: macOS
+            ext: ""
+          - os: ubuntu-latest
+            name: Linux
+            ext: ""
+
     steps:
       - uses: actions/checkout@v4
       
@@ -20,11 +33,11 @@ jobs:
           pip install pyinstaller
           pip install -r requirements.txt
       
-      - name: Build EXE
+      - name: Build
         run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" login_client.py
       
-      - name: Upload EXE
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: CloudRaiser-Login-Windows
-          path: dist/*.exe
+          name: CloudRaiser-Login-${{ matrix.name }}
+          path: dist/CloudRaiser-Login${{ matrix.ext }}
