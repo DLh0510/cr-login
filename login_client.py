@@ -18,8 +18,7 @@ def resource_path(relative_path):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.dirname(__file__), relative_path)
 
-def login(username, password, btn, status_label):
-    btn.config(state='disabled')
+def login(username, password, status_label):
     status_label.config(text="正在登录...")
     try:
         driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
@@ -31,14 +30,12 @@ def login(username, password, btn, status_label):
     except Exception as e:
         status_label.config(text="")
         messagebox.showerror("错误", str(e))
-    finally:
-        btn.config(state='normal')
 
 def on_login():
     if not user_entry.get() or not pass_entry.get():
         messagebox.showwarning("提示", "请输入用户名和密码")
         return
-    threading.Thread(target=login, args=(user_entry.get(), pass_entry.get(), login_btn, status_label), daemon=True).start()
+    threading.Thread(target=login, args=(user_entry.get(), pass_entry.get(), status_label), daemon=True).start()
 
 def on_enter(event):
     on_login()
@@ -103,11 +100,29 @@ pass_entry.pack(fill='x', ipady=8, pady=(5,0))
 pass_entry.configure(highlightthickness=2, highlightcolor=PRIMARY_BLUE)
 pass_entry.bind('<Return>', on_enter)
 
-# 登录按钮
-login_btn = tk.Button(card, text="登 录", font=('PingFang SC', 14, 'bold'), fg=WHITE, bg=PRIMARY_BLUE,
-                      activebackground=DARK_BLUE, activeforeground=WHITE, relief='flat', cursor='hand2',
-                      width=20, height=2, command=on_login)
-login_btn.pack(pady=(20, 10))
+# 登录按钮 - 使用 Frame 模拟按钮解决 Mac 显示问题
+btn_frame = tk.Frame(card, bg=PRIMARY_BLUE, cursor='hand2')
+btn_frame.pack(pady=(20, 10))
+
+login_btn = tk.Label(btn_frame, text="登  录", font=('PingFang SC', 14, 'bold'), 
+                     fg=WHITE, bg=PRIMARY_BLUE, padx=80, pady=12)
+login_btn.pack()
+
+def on_btn_enter(e):
+    btn_frame.config(bg=DARK_BLUE)
+    login_btn.config(bg=DARK_BLUE)
+
+def on_btn_leave(e):
+    btn_frame.config(bg=PRIMARY_BLUE)
+    login_btn.config(bg=PRIMARY_BLUE)
+
+def on_btn_click(e):
+    on_login()
+
+btn_frame.bind('<Enter>', on_btn_enter)
+btn_frame.bind('<Leave>', on_btn_leave)
+btn_frame.bind('<Button-1>', on_btn_click)
+login_btn.bind('<Button-1>', on_btn_click)
 
 # 状态标签
 status_label = tk.Label(card, text="", font=('PingFang SC', 9), fg=PRIMARY_BLUE, bg=WHITE)
