@@ -62,7 +62,7 @@ header = tk.Frame(root, bg=PRIMARY_BLUE, height=80)
 header.pack(fill='x')
 header.pack_propagate(False)
 
-title_label = tk.Label(header, text="河南经济贸易技师学院", font=('Microsoft YaHei', 18, 'bold'), fg=WHITE, bg=PRIMARY_BLUE)
+title_label = tk.Label(header, text="河南经济贸易技师学院", font=('PingFang SC', 18, 'bold'), fg=WHITE, bg=PRIMARY_BLUE)
 title_label.pack(pady=25)
 
 # Logo
@@ -83,38 +83,38 @@ except:
 card = tk.Frame(root, bg=WHITE, padx=40, pady=30)
 card.pack(pady=10)
 
-login_title = tk.Label(card, text="云平台管理系统", font=('Microsoft YaHei', 16, 'bold'), fg=DARK_BLUE, bg=WHITE)
+login_title = tk.Label(card, text="云平台管理系统", font=('PingFang SC', 16, 'bold'), fg=DARK_BLUE, bg=WHITE)
 login_title.pack(pady=(0, 20))
 
 # 用户名
 user_frame = tk.Frame(card, bg=WHITE)
 user_frame.pack(fill='x', pady=8)
-tk.Label(user_frame, text="用户名", font=('Microsoft YaHei', 10), fg=GRAY, bg=WHITE, anchor='w').pack(fill='x')
-user_entry = tk.Entry(user_frame, font=('Microsoft YaHei', 12), width=28, relief='solid', bd=1)
+tk.Label(user_frame, text="用户名", font=('PingFang SC', 11), fg=GRAY, bg=WHITE, anchor='w').pack(fill='x')
+user_entry = tk.Entry(user_frame, font=('PingFang SC', 12), width=28, relief='solid', bd=1)
 user_entry.pack(fill='x', ipady=8, pady=(5,0))
 user_entry.configure(highlightthickness=2, highlightcolor=PRIMARY_BLUE)
 
 # 密码
 pass_frame = tk.Frame(card, bg=WHITE)
 pass_frame.pack(fill='x', pady=8)
-tk.Label(pass_frame, text="密码", font=('Microsoft YaHei', 10), fg=GRAY, bg=WHITE, anchor='w').pack(fill='x')
-pass_entry = tk.Entry(pass_frame, font=('Microsoft YaHei', 12), width=28, show="●", relief='solid', bd=1)
+tk.Label(pass_frame, text="密码", font=('PingFang SC', 11), fg=GRAY, bg=WHITE, anchor='w').pack(fill='x')
+pass_entry = tk.Entry(pass_frame, font=('PingFang SC', 12), width=28, show="●", relief='solid', bd=1)
 pass_entry.pack(fill='x', ipady=8, pady=(5,0))
 pass_entry.configure(highlightthickness=2, highlightcolor=PRIMARY_BLUE)
 pass_entry.bind('<Return>', on_enter)
 
 # 登录按钮
-login_btn = tk.Button(card, text="登 录", font=('Microsoft YaHei', 12, 'bold'), fg=WHITE, bg=PRIMARY_BLUE,
+login_btn = tk.Button(card, text="登 录", font=('PingFang SC', 14, 'bold'), fg=WHITE, bg=PRIMARY_BLUE,
                       activebackground=DARK_BLUE, activeforeground=WHITE, relief='flat', cursor='hand2',
-                      width=26, height=2, command=on_login)
+                      width=20, height=2, command=on_login)
 login_btn.pack(pady=(20, 10))
 
 # 状态标签
-status_label = tk.Label(card, text="", font=('Microsoft YaHei', 9), fg=PRIMARY_BLUE, bg=WHITE)
+status_label = tk.Label(card, text="", font=('PingFang SC', 9), fg=PRIMARY_BLUE, bg=WHITE)
 status_label.pack()
 
 # 底部版权
-footer = tk.Label(root, text="© 2024 河南经济贸易技师学院 版权所有", font=('Microsoft YaHei', 9), fg=GRAY, bg='#f5f7fa')
+footer = tk.Label(root, text="© 2024 河南经济贸易技师学院 版权所有", font=('PingFang SC', 9), fg=GRAY, bg='#f5f7fa')
 footer.pack(side='bottom', pady=15)
 
 root.mainloop()
