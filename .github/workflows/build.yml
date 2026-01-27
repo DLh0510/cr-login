@@ -1,4 +1,4 @@
-name: Build Multi-Platform
+name: Build Windows Installer
 
 on:
   push:
@@ -6,21 +6,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            name: Windows
-            ext: .exe
-          - os: macos-latest
-            name: macOS
-            ext: ""
-          - os: ubuntu-latest
-            name: Linux
-            ext: ""
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+      
+      - name: Build EXE
+        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --icon "icon.ico" login_client.py
+      
+      - name: Create Installer with Inno Setup
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.4
+        with:
+          path: installer.iss
+      
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: CloudRaiser-Login-Windows-Installer
+          path: Output/*.exe
 
+  build-macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       
@@ -39,5 +54,28 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: CloudRaiser-Login-${{ matrix.name }}
-          path: dist/CloudRaiser-Login${{ matrix.ext }}
+          name: CloudRaiser-Login-macOS
+          path: dist/CloudRaiser-Login
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+      
+      - name: Build
+        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" login_client.py
+      
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: CloudRaiser-Login-Linux
+          path: dist/CloudRaiser-Login
