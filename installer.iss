@@ -1,9 +1,9 @@
 [Setup]
-AppName=CloudRaiser Admin 登录
+AppName=云计算竞赛训练平台-架构完善项目实训模块
 AppVersion=1.0
-DefaultDirName={autopf}\CloudRaiser-Login
+DefaultDirName={autopf}\CloudRaiser-Architecture
 DefaultGroupName=CloudRaiser
-OutputBaseFilename=CloudRaiser-Login-Setup
+OutputBaseFilename=CloudRaiser-Architecture-Setup
 Compression=lzma
 SolidCompression=yes
 SetupIconFile=icon.ico
@@ -13,9 +13,9 @@ UninstallDisplayIcon={app}\CloudRaiser-Login.exe
 Source: "dist\CloudRaiser-Login.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\CloudRaiser Admin 登录"; Filename: "{app}\CloudRaiser-Login.exe"
-Name: "{group}\卸载 CloudRaiser Admin 登录"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\CloudRaiser Admin 登录"; Filename: "{app}\CloudRaiser-Login.exe"
+Name: "{group}\云计算竞赛训练平台-架构完善"; Filename: "{app}\CloudRaiser-Login.exe"
+Name: "{group}\卸载 云计算竞赛训练平台-架构完善"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\云计算竞赛训练平台-架构完善"; Filename: "{app}\CloudRaiser-Login.exe"
 
 [Run]
-Filename: "{app}\CloudRaiser-Login.exe"; Description: "启动 CloudRaiser Admin 登录"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\CloudRaiser-Login.exe"; Description: "启动 云计算竞赛训练平台-架构完善"; Flags: nowait postinstall skipifsilent
