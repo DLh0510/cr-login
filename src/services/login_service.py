@@ -9,22 +9,19 @@ class LoginService:
     def __init__(self, login_url):
         self.login_url = login_url
     
-    def login(self, username, password):
+    def login(self, event_code, user_id, password, player_name):
         driver = get_browser()
         driver.get(self.login_url)
         
         wait = WebDriverWait(driver, 10)
         
-        # 等待并填写用户名
-        user_input = wait.until(EC.presence_of_element_located((By.ID, "username")))
-        user_input.clear()
-        user_input.send_keys(username)
-        
-        # 填写密码
-        pass_input = driver.find_element(By.ID, "password")
-        pass_input.clear()
-        pass_input.send_keys(password)
-        
-        # 点击登录按钮
-        login_btn = driver.find_element(By.CSS_SELECTOR, "button.ant-btn-primary")
-        login_btn.click()
+        # EventCode
+        wait.until(EC.presence_of_element_located((By.ID, "event_id"))).send_keys(event_code)
+        # ID
+        driver.find_element(By.ID, "lab_user").send_keys(user_id)
+        # Password
+        driver.find_element(By.ID, "lab_user_pass").send_keys(password)
+        # Player Name
+        driver.find_element(By.ID, "lab_user_name").send_keys(player_name)
+        # Login
+        driver.find_element(By.CSS_SELECTOR, "button").click()
