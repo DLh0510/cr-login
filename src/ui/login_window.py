@@ -49,7 +49,7 @@ class LoginWindow(ctk.CTk):
         # 大标题
         ctk.CTkLabel(left, text="云计算", font=ctk.CTkFont(size=48, weight="bold"),
                      text_color="#00d4ff").pack(anchor="w", pady=(20, 0))
-        ctk.CTkLabel(left, text="无服务器架构竞赛平台", font=ctk.CTkFont(size=20, weight="bold"),
+        ctk.CTkLabel(left, text="云计算无服务器架构实训平台", font=ctk.CTkFont(size=20, weight="bold"),
                      text_color="white").pack(anchor="w", pady=(0, 12))
         
         ctk.CTkLabel(left, text="WorldSkills 技术标准 · Serverless 架构实训\n自动化评分系统 · 企业级云原生实践",
