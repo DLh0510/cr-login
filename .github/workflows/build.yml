@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build EXE
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --icon "icon.ico" --add-data "yjgj_foot_logo.png;." login_client.py
+        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --icon "icon.ico" --add-data "yjgj_foot_logo.png;." main.py
       
       - name: Create Installer with Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.4
@@ -49,7 +49,7 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." login_client.py
+        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." main.py
       
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -72,7 +72,7 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." login_client.py
+        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." main.py
       
       - name: Upload
         uses: actions/upload-artifact@v4

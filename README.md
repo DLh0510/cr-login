@@ -28,7 +28,7 @@ Windows 桌面客户端，用于快速登录 CloudRaiser Admin 平台。
 
 ```bash
 pip install -r requirements.txt
-python login_client.py
+python main.py
 ```
 
 ## 构建
