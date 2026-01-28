@@ -51,7 +51,7 @@ class LoginWindow(ctk.CTk):
         # 大标题
         ctk.CTkLabel(left, text="云计算", font=ctk.CTkFont(size=48, weight="bold"),
                      text_color="#a855f7").pack(anchor="w", pady=(25, 0))
-        ctk.CTkLabel(left, text="公有架构竞赛平台", font=ctk.CTkFont(size=22, weight="bold"),
+        ctk.CTkLabel(left, text="云计算公有架构实训平台", font=ctk.CTkFont(size=22, weight="bold"),
                      text_color="white").pack(anchor="w", pady=(0, 15))
         
         # 描述
@@ -100,7 +100,7 @@ class LoginWindow(ctk.CTk):
                      text_color="white").pack(anchor="w")
         
         # 用户名
-        ctk.CTkLabel(inner, text="USERNAME / 选手编号", font=ctk.CTkFont(size=10),
+        ctk.CTkLabel(inner, text="USERNAME / 账号", font=ctk.CTkFont(size=10),
                      text_color="#8b8ca7", anchor="w").pack(fill="x", pady=(0, 5))
         user_f = ctk.CTkFrame(inner, fg_color="#1e1f36", corner_radius=8, height=45)
         user_f.pack(fill="x", pady=(0, 12))
