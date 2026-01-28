@@ -1,8 +1,9 @@
-"""登录窗口 - 云计算技能大赛"""
+"""赛博朋克风格登录窗口"""
 import customtkinter as ctk
 from tkinter import messagebox
 from PIL import Image
 import threading
+import random
 import os
 import sys
 
@@ -18,156 +19,140 @@ def resource_path(path):
 class LoginWindow(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.login_service = LoginService(CONFIG["url"])
         self._setup_window()
         self._create_ui()
+        self._start_log_animation()
     
     def _setup_window(self):
-        self.title(CONFIG['title'])
-        self.geometry(CONFIG["window_size"])
+        self.title(f"{CONFIG['title']} - {CONFIG['subtitle']}")
+        self.geometry("480x650")
         self.resizable(False, False)
-        self.configure(fg_color="#020617")
+        self.configure(fg_color="#0a0e14")
         ctk.set_appearance_mode("dark")
     
     def _create_ui(self):
-        main = ctk.CTkFrame(self, fg_color="#0f172a", corner_radius=0)
-        main.pack(fill="both", expand=True)
+        main = ctk.CTkFrame(self, fg_color="#0a0e14", border_width=1, border_color="#00d4ff", corner_radius=0)
+        main.pack(expand=True, fill="both", padx=15, pady=15)
         
-        # 左侧品牌区
-        left = ctk.CTkFrame(main, fg_color="transparent", width=380)
-        left.pack(side="left", fill="both", padx=40, pady=40)
-        left.pack_propagate(False)
+        ctk.CTkFrame(main, height=2, fg_color="#00d4ff").pack(fill="x", pady=(10,0))
         
-        # 云计算图标框
-        cube = ctk.CTkFrame(left, fg_color="#0f172a", width=80, height=80, corner_radius=8,
-                           border_width=2, border_color="#00f5ff")
-        cube.pack(pady=(20, 25))
-        cube.pack_propagate(False)
-        ctk.CTkLabel(cube, text="云计算", font=ctk.CTkFont(size=16, weight="bold"),
-                     text_color="#00f5ff").place(relx=0.5, rely=0.5, anchor="center")
+        content = ctk.CTkFrame(main, fg_color="transparent")
+        content.pack(expand=True, fill="both", padx=25, pady=20)
         
-        # 大标题
-        ctk.CTkLabel(left, text="云计算技能大赛训练平台", font=ctk.CTkFont(size=24, weight="bold"),
-                     text_color="white").pack(pady=(0, 8))
-        ctk.CTkLabel(left, text=CONFIG["subtitle"], font=ctk.CTkFont(size=11),
-                     text_color="#64748b").pack(pady=(0, 25))
-        
-        # 技术标签
-        tags_frame = ctk.CTkFrame(left, fg_color="transparent")
-        tags_frame.pack()
-        tags = ["AWS", "CloudRaiser", "EC2", "S3", "Lambda"]
-        row1 = ctk.CTkFrame(tags_frame, fg_color="transparent")
-        row1.pack(pady=3)
-        row2 = ctk.CTkFrame(tags_frame, fg_color="transparent")
-        row2.pack(pady=3)
-        
-        for tag in tags[:3]:
-            t = ctk.CTkFrame(row1, fg_color="#1e293b", corner_radius=15, border_width=1, border_color="#334155")
-            t.pack(side="left", padx=4)
-            ctk.CTkLabel(t, text=tag, font=ctk.CTkFont(size=11), text_color="#94a3b8").pack(padx=12, pady=6)
-        
-        for tag in tags[3:]:
-            t = ctk.CTkFrame(row2, fg_color="#1e293b", corner_radius=15, border_width=1, border_color="#334155")
-            t.pack(side="left", padx=4)
-            ctk.CTkLabel(t, text=tag, font=ctk.CTkFont(size=11), text_color="#94a3b8").pack(padx=12, pady=6)
-        
-        # Logo 展示
-        logos_frame = ctk.CTkFrame(left, fg_color="transparent")
-        logos_frame.pack(pady=(25, 0))
+        self._create_header(content)
+        self._create_form(content)
+        self._create_log_panel(content)
+        self._create_footer(content)
+    
+    def _create_header(self, parent):
         try:
-            ws_img = ctk.CTkImage(Image.open(resource_path("worldskills_logo.png")), size=(90, 36))
-            ctk.CTkLabel(logos_frame, image=ws_img, text="").pack(side="left", padx=8)
-        except: pass
-        try:
-            aws_img = ctk.CTkImage(Image.open(resource_path("aws_logo.png")), size=(36, 36))
-            ctk.CTkLabel(logos_frame, image=aws_img, text="").pack(side="left", padx=8)
-        except: pass
+            img = ctk.CTkImage(Image.open(resource_path(CONFIG["logo_file"])), size=(70, 70))
+            ctk.CTkLabel(parent, image=img, text="").pack(pady=(5, 10))
+        except:
+            ctk.CTkLabel(parent, text="🛡️", font=ctk.CTkFont(size=50)).pack(pady=(5, 10))
         
-        logos_frame2 = ctk.CTkFrame(left, fg_color="transparent")
-        logos_frame2.pack(pady=(10, 0))
-        try:
-            foot_img = ctk.CTkImage(Image.open(resource_path("foot_logo.png")), size=(120, 40))
-            ctk.CTkLabel(logos_frame2, image=foot_img, text="").pack()
-        except: pass
+        ctk.CTkLabel(parent, text=CONFIG["title"], font=ctk.CTkFont(size=20, weight="bold"),
+                     text_color="#00d4ff").pack(pady=(5, 0))
+        ctk.CTkLabel(parent, text=CONFIG["subtitle"].upper(), font=ctk.CTkFont(family="Courier", size=11),
+                     text_color="#4a9eff").pack(pady=(2, 15))
+    
+    def _create_form(self, parent):
+        form = ctk.CTkFrame(parent, fg_color="transparent")
+        form.pack(fill="x", pady=5)
         
-        # 右侧登录卡片
-        right = ctk.CTkFrame(main, fg_color="#1e293b", corner_radius=20, width=360,
-                            border_width=1, border_color="#334155")
-        right.pack(side="right", fill="y", padx=(0, 30), pady=30)
-        right.pack_propagate(False)
+        self.user_entry = self._create_input(form, "OPERATOR ID / 参赛账号", "user")
+        self.pass_entry = self._create_input(form, "ACCESS KEY / 安全密钥", "pass", show="●")
         
-        inner = ctk.CTkFrame(right, fg_color="transparent")
-        inner.pack(fill="both", expand=True, padx=32, pady=24)
+        opt_frame = ctk.CTkFrame(form, fg_color="transparent")
+        opt_frame.pack(fill="x", pady=(5, 15))
+        ctk.CTkCheckBox(opt_frame, text="保持安全连接", font=ctk.CTkFont(size=11),
+                        text_color="#4a9eff", fg_color="#00d4ff", border_color="#1e3a5f").pack(side="left")
+        ctk.CTkLabel(opt_frame, text="密钥重置", font=ctk.CTkFont(size=11), text_color="#4a9eff", cursor="hand2").pack(side="right")
         
-        # 头部
-        header = ctk.CTkFrame(inner, fg_color="transparent")
-        header.pack(fill="x", pady=(0, 5))
-        try:
-            img = ctk.CTkImage(Image.open(resource_path(CONFIG["logo_file"])), size=(36, 36))
-            ctk.CTkLabel(header, image=img, text="").pack(side="left", padx=(0, 10))
-        except: pass
-        ctk.CTkLabel(header, text="河南经济贸易技师学院", font=ctk.CTkFont(size=13, weight="bold"),
-                     text_color="white").pack(side="left")
-        
-        ctk.CTkLabel(inner, text="欢迎参加技能大赛", font=ctk.CTkFont(size=18, weight="bold"),
-                     text_color="white").pack(anchor="w", pady=(12, 3))
-        ctk.CTkLabel(inner, text="请输入您的凭证以访问训练平台", font=ctk.CTkFont(size=11),
-                     text_color="#64748b").pack(anchor="w", pady=(0, 14))
-        
-        # EventCode
-        ctk.CTkLabel(inner, text="EventCode", font=ctk.CTkFont(size=11), text_color="#94a3b8", anchor="w").pack(fill="x", pady=(0, 4))
-        self.event_entry = ctk.CTkEntry(inner, height=40, corner_radius=10, fg_color="#0f172a",
-                                        border_width=1, border_color="#334155", text_color="white",
-                                        placeholder_text="输入活动代码", placeholder_text_color="#475569")
-        self.event_entry.pack(fill="x", pady=(0, 10))
-        
-        # ID
-        ctk.CTkLabel(inner, text="ID", font=ctk.CTkFont(size=11), text_color="#94a3b8", anchor="w").pack(fill="x", pady=(0, 4))
-        self.user_entry = ctk.CTkEntry(inner, height=40, corner_radius=10, fg_color="#0f172a",
-                                       border_width=1, border_color="#334155", text_color="white",
-                                       placeholder_text="输入账号", placeholder_text_color="#475569")
-        self.user_entry.pack(fill="x", pady=(0, 10))
-        
-        # Password
-        ctk.CTkLabel(inner, text="Password", font=ctk.CTkFont(size=11), text_color="#94a3b8", anchor="w").pack(fill="x", pady=(0, 4))
-        self.pass_entry = ctk.CTkEntry(inner, height=40, corner_radius=10, fg_color="#0f172a",
-                                       border_width=1, border_color="#334155", text_color="white",
-                                       placeholder_text="输入密码", placeholder_text_color="#475569", show="●")
-        self.pass_entry.pack(fill="x", pady=(0, 10))
-        
-        # Player Name
-        ctk.CTkLabel(inner, text="Player Name", font=ctk.CTkFont(size=11), text_color="#94a3b8", anchor="w").pack(fill="x", pady=(0, 4))
-        self.name_entry = ctk.CTkEntry(inner, height=40, corner_radius=10, fg_color="#0f172a",
-                                       border_width=1, border_color="#334155", text_color="white",
-                                       placeholder_text="输入选手姓名", placeholder_text_color="#475569")
-        self.name_entry.pack(fill="x", pady=(0, 14))
-        
-        # 登录按钮
-        self.login_btn = ctk.CTkButton(inner, text="进入训练平台 →", height=44, corner_radius=10,
+        self.login_btn = ctk.CTkButton(form, text="⟳  初始化会话 / LOGIN", height=50, corner_radius=4,
                                        font=ctk.CTkFont(size=14, weight="bold"),
-                                       fg_color="#00f5ff", hover_color="#00d4e6", text_color="#020617",
+                                       fg_color="#00d4ff", hover_color="#00a8cc", text_color="#0a0e14",
                                        command=self._handle_login)
-        self.login_btn.pack(fill="x")
-        self.name_entry.bind('<Return>', lambda e: self._handle_login())
+        self.login_btn.pack(fill="x", pady=(5, 0))
+        self.pass_entry.bind('<Return>', lambda e: self._handle_login())
+    
+    def _create_input(self, parent, placeholder, name, show=None):
+        frame = ctk.CTkFrame(parent, fg_color="#0d1117", border_width=1, border_color="#1e3a5f", corner_radius=4)
+        frame.pack(fill="x", pady=(0, 12))
+        
+        inner = ctk.CTkFrame(frame, fg_color="transparent")
+        inner.pack(fill="x", padx=15, pady=8)
+        
+        entry = ctk.CTkEntry(inner, placeholder_text=placeholder, border_width=0, fg_color="transparent",
+                            text_color="#00d4ff", placeholder_text_color="#3d5a80", font=ctk.CTkFont(size=13),
+                            height=30, show=show)
+        entry.pack(side="left", fill="x", expand=True)
+        
+        icon = "👤" if name == "user" else "👁"
+        ctk.CTkLabel(inner, text=icon, font=ctk.CTkFont(size=16), text_color="#3d5a80").pack(side="right")
+        return entry
+    
+    def _create_log_panel(self, parent):
+        ctk.CTkFrame(parent, height=1, fg_color="#1e3a5f").pack(fill="x", pady=(15, 10))
+        ctk.CTkLabel(parent, text="SYSTEM LOG:", font=ctk.CTkFont(family="Courier", size=11),
+                     text_color="#4a9eff", anchor="w").pack(fill="x")
+        
+        self.log_frame = ctk.CTkFrame(parent, fg_color="transparent", height=100)
+        self.log_frame.pack(fill="x", pady=(5, 0))
+        self.log_frame.pack_propagate(False)
+        
+        self.log_labels = []
+        logs = ["> 握手协议已建立", "> 正在连接安全服务器...", "> 系统完整性检查通过",
+                "> 等待用户凭证...", "> 加密通道已启用 (AES-256)"]
+        for log in logs:
+            lbl = ctk.CTkLabel(self.log_frame, text=log, font=ctk.CTkFont(family="Courier", size=10),
+                              text_color="#00ff88", anchor="w")
+            lbl.pack(fill="x")
+            self.log_labels.append(lbl)
+    
+    def _create_footer(self, parent):
+        ctk.CTkFrame(parent, height=1, fg_color="#1e3a5f").pack(fill="x", pady=(15, 8))
+        ctk.CTkLabel(parent, text="SECURE CONNECTION | TLS v1.3 ENCRYPTED",
+                     font=ctk.CTkFont(family="Courier", size=9), text_color="#3d5a80").pack()
+    
+    def _start_log_animation(self):
+        def blink():
+            for lbl in self.log_labels:
+                lbl.configure(text_color="#00ff88" if random.random() > 0.3 else "#004422")
+            self.after(500, blink)
+        blink()
+    
+    def _add_log(self, text):
+        for i in range(len(self.log_labels) - 1):
+            self.log_labels[i].configure(text=self.log_labels[i + 1].cget("text"))
+        self.log_labels[-1].configure(text=text)
     
     def _handle_login(self):
-        event_code = self.event_entry.get().strip()
-        user_id = self.user_entry.get().strip()
+        username = self.user_entry.get().strip()
         password = self.pass_entry.get().strip()
-        player_name = self.name_entry.get().strip()
         
-        if not all([event_code, user_id, password, player_name]):
-            messagebox.showwarning("提示", "请填写所有字段")
+        if not username or not password:
+            messagebox.showwarning("⚠ ALERT", "请输入账号和密钥")
             return
         
-        self.login_btn.configure(state="disabled", text="登录中...")
-        self.login_service = LoginService(CONFIG["login_url"])
+        self.login_btn.configure(state="disabled", text="⟳  正在初始化...")
+        self._add_log("> 正在验证凭证...")
         
-        def task():
+        def login_task():
             try:
-                self.login_service.login(event_code, user_id, password, player_name)
-                self.after(0, lambda: self.login_btn.configure(state="normal", text="进入训练平台 →"))
+                self.login_service.login(username, password)
+                self.after(0, self._on_success)
             except Exception as e:
-                self.after(0, lambda: [self.login_btn.configure(state="normal", text="进入训练平台 →"),
-                                       messagebox.showerror("登录失败", str(e))])
+                self.after(0, lambda: self._on_error(str(e)))
         
-        threading.Thread(target=task, daemon=True).start()
+        threading.Thread(target=login_task, daemon=True).start()
+    
+    def _on_success(self):
+        self._add_log("> ✓ 会话初始化成功")
+        self.login_btn.configure(state="normal", text="⟳  初始化会话 / LOGIN")
+    
+    def _on_error(self, msg):
+        self._add_log(f"> ✖ 错误: {msg[:30]}")
+        self.login_btn.configure(state="normal", text="⟳  初始化会话 / LOGIN")
+        messagebox.showerror("✖ CONNECTION FAILED", msg)

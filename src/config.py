@@ -1,9 +1,10 @@
 """应用配置"""
 
 CONFIG = {
-    "title": "云计算技能大赛训练平台",
-    "subtitle": "Cloud Computing Skills Competition Training Platform",
-    "window_size": "820x620",
+    "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
+    "title": "云计算竞赛训练工作站",
+    "subtitle": "CR-Questing 模块",
+    "window_size": "420x540",
+    "logo_size": (80, 80),
     "logo_file": "yjgj_foot_logo.png",
-    "login_url": "http://cloudraiser-hnjm-249327289.us-east-1.elb.amazonaws.com/login",
 }
