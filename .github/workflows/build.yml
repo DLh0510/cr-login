@@ -2,7 +2,7 @@ name: Build Windows Installer
 
 on:
   push:
-    branches: [main, AUTO14199, AUTO14200, AUTO14229, AUTO14230, AUTO14239, AUTO14240]
+    branches: [main, AUTO14199, AUTO14200, AUTO14229, AUTO14230, AUTO14239, AUTO14240, AUTO14241]
   workflow_dispatch:
 
 jobs:
