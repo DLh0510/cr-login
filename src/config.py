@@ -1,10 +1,11 @@
 """应用配置"""
 
 CONFIG = {
-    "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
-    "title": "云计算竞赛训练平台",
-    "subtitle": "架构完善项目实训模块",
-    "window_size": "420x540",
+    "title": "云计算运维实训平台",
+    "subtitle": "",
+    "window_size": "450x580",
     "logo_size": (80, 80),
     "logo_file": "yjgj_foot_logo.png",
+    "teacher_url": "http://cvt41-1899555523.cn-north-1.elb.amazonaws.com.cn:81/",
+    "student_url": "http://cvt41-1899555523.cn-north-1.elb.amazonaws.com.cn:82/",
 }
