@@ -1,13 +1,14 @@
-"""UI主题配置"""
+"""主题配置"""
 
 THEME = {
-    "primary": "#1e6bb8",
-    "primary_hover": "#155a9c",
-    "bg": "#f0f4f8",
-    "card_bg": "#ffffff",
-    "text": "#1a1a2e",
-    "text_secondary": "#64748b",
-    "border": "#e2e8f0",
+    "primary": "#0ea5e9",
+    "primary_hover": "#0284c7",
+    "bg": "#0f172a",
+    "card_bg": "#1e293b",
+    "text": "#f1f5f9",
+    "text_secondary": "#94a3b8",
+    "border": "#334155",
     "success": "#22c55e",
     "error": "#ef4444",
+    "accent": "#38bdf8",
 }

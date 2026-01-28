@@ -2,9 +2,9 @@
 
 CONFIG = {
     "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
-    "title": "河南经济贸易技师学院",
-    "subtitle": "云平台管理系统",
-    "window_size": "400x520",
-    "logo_size": (90, 90),
+    "title": "云计算竞赛训练平台",
+    "subtitle": "故障排除项目实训模块",
+    "window_size": "420x540",
+    "logo_size": (80, 80),
     "logo_file": "yjgj_foot_logo.png",
 }
