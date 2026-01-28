@@ -3,7 +3,7 @@
 CONFIG = {
     "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
     "title": "云计算竞赛训练平台",
-    "subtitle": "故障排除项目实训模块",
+    "subtitle": "架构完善项目实训模块",
     "window_size": "420x540",
     "logo_size": (80, 80),
     "logo_file": "yjgj_foot_logo.png",
