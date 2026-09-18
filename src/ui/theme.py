@@ -1,14 +1,14 @@
 """主题配置"""
 
 THEME = {
-    "primary": "#0ea5e9",
-    "primary_hover": "#0284c7",
-    "bg": "#0f172a",
-    "card_bg": "#1e293b",
-    "text": "#f1f5f9",
-    "text_secondary": "#94a3b8",
-    "border": "#334155",
-    "success": "#22c55e",
+    "primary": "#7c3aed",      # 紫色主题，适合AI/提示词工程
+    "primary_hover": "#6d28d9",
+    "bg": "#0f0a1e",           # 深紫黑背景
+    "card_bg": "#1a1232",
+    "text": "#f3f0ff",
+    "text_secondary": "#a78bfa",
+    "border": "#5b21b6",
+    "success": "#10b981",
     "error": "#ef4444",
-    "accent": "#38bdf8",
+    "accent": "#a78bfa",
 }

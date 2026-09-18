@@ -1,10 +1,9 @@
 # login_client.py
-"""河南经济贸易技师学院 - 云平台登录客户端"""
+"""提示词工程课程实训平台 - 登录客户端"""
 import customtkinter as ctk
 from tkinter import messagebox
 from PIL import Image
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -15,23 +14,23 @@ import sys
 
 # ============ 配置 ============
 CONFIG = {
-    "url": "http://cloudraiser-admin-hnjm-471998617.us-east-1.elb.amazonaws.com/admin_login",
-    "title": "河南经济贸易技师学院",
-    "subtitle": "云平台管理系统",
-    "window_size": "400x520",
-    "logo_size": (90, 90),
+    "url": "https://skillbuilder.aws/",
+    "title": "提示词工程课程实训平台",
+    "subtitle": "Prompt Engineering Practice Platform",
+    "window_size": "480x650",
+    "logo_size": (80, 80),
 }
 
 # ============ 主题 ============
 THEME = {
-    "primary": "#1e6bb8",
-    "primary_hover": "#155a9c",
-    "bg": "#f0f4f8",
-    "card_bg": "#ffffff",
-    "text": "#1a1a2e",
-    "text_secondary": "#64748b",
-    "border": "#e2e8f0",
-    "success": "#22c55e",
+    "primary": "#7c3aed",      # 紫色主题，适合AI/提示词工程
+    "primary_hover": "#6d28d9",
+    "bg": "#0f0a1e",           # 深紫黑背景
+    "card_bg": "#1a1232",
+    "text": "#f3f0ff",
+    "text_secondary": "#a78bfa",
+    "border": "#5b21b6",
+    "success": "#10b981",
     "error": "#ef4444",
 }
 
@@ -73,11 +72,10 @@ class LoginService:
     @staticmethod
     def login(username, password, on_success, on_error):
         try:
+            # 直接打开浏览器，无需验证账号密码
             driver = get_browser()
+            driver.maximize_window()
             driver.get(CONFIG["url"])
-            driver.find_element(By.ID, "admin_user").send_keys(username)
-            driver.find_element(By.ID, "admin_user_pass").send_keys(password)
-            driver.find_element(By.NAME, "login").click()
             on_success()
         except Exception as e:
             on_error(str(e))
@@ -90,11 +88,11 @@ class LoginApp(ctk.CTk):
         self._create_ui()
     
     def _setup_window(self):
-        self.title(f"{CONFIG['title']} - {CONFIG['subtitle']}")
+        self.title(CONFIG['title'])
         self.geometry(CONFIG["window_size"])
         self.resizable(False, False)
         self.configure(fg_color=THEME["bg"])
-        ctk.set_appearance_mode("light")
+        ctk.set_appearance_mode("dark")
     
     def _create_ui(self):
         # 主容器
@@ -110,13 +108,14 @@ class LoginApp(ctk.CTk):
         try:
             img = ctk.CTkImage(Image.open(resource_path("yjgj_foot_logo.png")), size=CONFIG["logo_size"])
             ctk.CTkLabel(parent, image=img, text="").pack(pady=(0, 10))
-        except: pass
-        
+        except:
+            ctk.CTkLabel(parent, text="🤖", font=ctk.CTkFont(size=50)).pack(pady=(5, 10))
+
         # 标题
-        ctk.CTkLabel(parent, text=CONFIG["title"], font=ctk.CTkFont(size=18, weight="bold"), 
-                     text_color=THEME["primary"]).pack()
-        ctk.CTkLabel(parent, text=CONFIG["subtitle"], font=ctk.CTkFont(size=13), 
-                     text_color=THEME["text_secondary"]).pack(pady=(2, 15))
+        ctk.CTkLabel(parent, text=CONFIG["title"], font=ctk.CTkFont(size=20, weight="bold"),
+                     text_color=THEME["text_secondary"]).pack()
+        ctk.CTkLabel(parent, text=CONFIG["subtitle"], font=ctk.CTkFont(size=12),
+                     text_color=THEME["primary"]).pack(pady=(2, 15))
     
     def _create_form(self, parent):
         # 卡片
@@ -128,55 +127,58 @@ class LoginApp(ctk.CTk):
         form.pack(padx=25, pady=25)
         
         # 用户名
-        self._create_field(form, "用户名", "请输入用户名")
+        self._create_field(form, "学员账号", "请输入学员账号")
         self.user_entry = self.last_entry
-        
+
         # 密码
-        self._create_field(form, "密码", "请输入密码", show="●")
+        self._create_field(form, "登录密码", "请输入登录密码", show="●")
         self.pass_entry = self.last_entry
         self.pass_entry.bind('<Return>', lambda e: self._on_login())
-        
+
         # 登录按钮
-        self.login_btn = ctk.CTkButton(form, text="登  录", width=260, height=42, corner_radius=8,
+        self.login_btn = ctk.CTkButton(form, text="🚀 进入课程平台", width=260, height=45, corner_radius=8,
                                        font=ctk.CTkFont(size=14, weight="bold"),
                                        fg_color=THEME["primary"], hover_color=THEME["primary_hover"],
+                                       text_color="#ffffff",
                                        command=self._on_login)
         self.login_btn.pack(pady=(15, 5))
-        
+
         # 状态
-        self.status = ctk.CTkLabel(form, text="", font=ctk.CTkFont(size=11))
+        self.status = ctk.CTkLabel(form, text="", font=ctk.CTkFont(size=11), text_color=THEME["text_secondary"])
         self.status.pack()
     
     def _create_field(self, parent, label, placeholder, show=None):
-        ctk.CTkLabel(parent, text=label, font=ctk.CTkFont(size=12), 
-                     text_color=THEME["text"], anchor="w").pack(fill="x", pady=(0, 4))
+        ctk.CTkLabel(parent, text=label, font=ctk.CTkFont(size=12),
+                     text_color=THEME["text_secondary"], anchor="w").pack(fill="x", pady=(0, 4))
         entry = ctk.CTkEntry(parent, width=260, height=40, placeholder_text=placeholder,
-                            corner_radius=6, border_color=THEME["border"], 
+                            corner_radius=8, border_color=THEME["border"],
+                            fg_color=THEME["card_bg"], text_color=THEME["text"],
                             font=ctk.CTkFont(size=12), show=show)
         entry.pack(pady=(0, 12))
         self.last_entry = entry
     
     def _create_footer(self, parent):
-        ctk.CTkLabel(parent, text="© 2024 河南经济贸易技师学院", 
-                     font=ctk.CTkFont(size=10), text_color=THEME["text_secondary"]).pack(side="bottom", pady=5)
+        ctk.CTkLabel(parent, text="© 2024 提示词工程课程实训平台 | AWS Skill Builder",
+                     font=ctk.CTkFont(size=9), text_color=THEME["text_secondary"]).pack(side="bottom", pady=5)
     
     def _on_login(self):
         username, password = self.user_entry.get().strip(), self.pass_entry.get().strip()
         if not username or not password:
-            messagebox.showwarning("提示", "请输入用户名和密码")
+            messagebox.showwarning("⚠ 提示", "请输入学员账号和密码")
             return
-        
-        self.login_btn.configure(state="disabled", text="登录中...")
-        self.status.configure(text="")
-        
+
+        self.login_btn.configure(state="disabled", text="🔄 正在登录...")
+        self.status.configure(text="正在打开课程平台...", text_color=THEME["text_secondary"])
+
         def on_success():
-            self.status.configure(text="✓ 登录成功", text_color=THEME["success"])
-            self.login_btn.configure(state="normal", text="登  录")
-        
+            self.status.configure(text="✓ 登录成功！", text_color=THEME["success"])
+            self.login_btn.configure(state="normal", text="🚀 进入课程平台")
+
         def on_error(msg):
-            self.login_btn.configure(state="normal", text="登  录")
-            messagebox.showerror("错误", msg)
-        
+            self.login_btn.configure(state="normal", text="🚀 进入课程平台")
+            self.status.configure(text="")
+            messagebox.showerror("✖ 登录失败", msg)
+
         threading.Thread(target=LoginService.login, args=(username, password, on_success, on_error), daemon=True).start()
 
 # ============ 入口 ============
