@@ -41,31 +41,55 @@ def resource_path(path):
 
 def get_browser():
     """尝试获取可用的浏览器驱动"""
+    errors = []
+
     # 尝试 Chrome
     try:
-        return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    except:
-        pass
-    
+        print("正在尝试启动 Chrome (webdriver_manager)...")
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        print("Chrome 启动成功！")
+        return driver
+    except Exception as e:
+        error_msg = f"Chrome (webdriver_manager) 失败: {str(e)}"
+        print(error_msg)
+        errors.append(error_msg)
+
     # 尝试 Edge
     try:
-        return webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
-    except:
-        pass
-    
+        print("正在尝试启动 Edge (webdriver_manager)...")
+        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
+        print("Edge 启动成功！")
+        return driver
+    except Exception as e:
+        error_msg = f"Edge (webdriver_manager) 失败: {str(e)}"
+        print(error_msg)
+        errors.append(error_msg)
+
     # 尝试系统默认 Chrome
     try:
-        return webdriver.Chrome()
-    except:
-        pass
-    
+        print("正在尝试启动系统默认 Chrome...")
+        driver = webdriver.Chrome()
+        print("系统默认 Chrome 启动成功！")
+        return driver
+    except Exception as e:
+        error_msg = f"系统默认 Chrome 失败: {str(e)}"
+        print(error_msg)
+        errors.append(error_msg)
+
     # 尝试系统默认 Edge
     try:
-        return webdriver.Edge()
-    except:
-        pass
-    
-    raise Exception("无法启动浏览器，请确保已安装 Chrome 或 Edge 浏览器")
+        print("正在尝试启动系统默认 Edge...")
+        driver = webdriver.Edge()
+        print("系统默认 Edge 启动成功！")
+        return driver
+    except Exception as e:
+        error_msg = f"系统默认 Edge 失败: {str(e)}"
+        print(error_msg)
+        errors.append(error_msg)
+
+    # 所有方法都失败了
+    error_summary = "\n".join(errors)
+    raise Exception(f"无法启动浏览器！请确保已安装 Chrome 或 Edge 浏览器。\n\n详细错误：\n{error_summary}")
 
 # ============ 登录逻辑 ============
 class LoginService:

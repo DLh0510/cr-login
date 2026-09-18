@@ -21,17 +21,17 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build EXE
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --icon "icon.ico" --add-data "yjgj_foot_logo.png;." main.py
-      
+        run: pyinstaller --onefile --windowed --name "PromptEngineering-Login" --icon "icon.ico" --add-data "yjgj_foot_logo.png;." main.py
+
       - name: Create Installer with Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.4
         with:
           path: installer.iss
-      
+
       - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
-          name: CloudRaiser-Login-Windows-Installer
+          name: PromptEngineering-Platform-Windows-Installer
           path: Output/*.exe
 
   build-macos:
@@ -49,13 +49,13 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." main.py
-      
+        run: pyinstaller --onefile --windowed --name "PromptEngineering-Login" --add-data "yjgj_foot_logo.png:." main.py
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: CloudRaiser-Login-macOS
-          path: dist/CloudRaiser-Login
+          name: PromptEngineering-Platform-macOS
+          path: dist/PromptEngineering-Login
 
   build-linux:
     runs-on: ubuntu-latest
@@ -72,10 +72,10 @@ jobs:
           pip install -r requirements.txt
       
       - name: Build
-        run: pyinstaller --onefile --windowed --name "CloudRaiser-Login" --add-data "yjgj_foot_logo.png:." main.py
-      
+        run: pyinstaller --onefile --windowed --name "PromptEngineering-Login" --add-data "yjgj_foot_logo.png:." main.py
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: CloudRaiser-Login-Linux
-          path: dist/CloudRaiser-Login
+          name: PromptEngineering-Platform-Linux
+          path: dist/PromptEngineering-Login

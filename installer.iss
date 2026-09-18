@@ -1,21 +1,21 @@
 [Setup]
-AppName=云计算竞赛训练平台-故障排除项目实训模块
+AppName=提示词工程课程实训平台
 AppVersion=1.0
-DefaultDirName={autopf}\CloudRaiser-Troubleshooting
-DefaultGroupName=CloudRaiser
-OutputBaseFilename=CloudRaiser-Troubleshooting-Setup
+DefaultDirName={autopf}\PromptEngineering-Platform
+DefaultGroupName=提示词工程实训平台
+OutputBaseFilename=PromptEngineering-Platform-Setup
 Compression=lzma
 SolidCompression=yes
 SetupIconFile=icon.ico
-UninstallDisplayIcon={app}\CloudRaiser-Login.exe
+UninstallDisplayIcon={app}\PromptEngineering-Login.exe
 
 [Files]
-Source: "dist\CloudRaiser-Login.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\PromptEngineering-Login.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\云计算竞赛训练平台-故障排除"; Filename: "{app}\CloudRaiser-Login.exe"
-Name: "{group}\卸载 云计算竞赛训练平台-故障排除"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\云计算竞赛训练平台-故障排除"; Filename: "{app}\CloudRaiser-Login.exe"
+Name: "{group}\提示词工程课程实训平台"; Filename: "{app}\PromptEngineering-Login.exe"
+Name: "{group}\卸载 提示词工程课程实训平台"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\提示词工程课程实训平台"; Filename: "{app}\PromptEngineering-Login.exe"
 
 [Run]
-Filename: "{app}\CloudRaiser-Login.exe"; Description: "启动 云计算竞赛训练平台-故障排除"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\PromptEngineering-Login.exe"; Description: "启动 提示词工程课程实训平台"; Flags: nowait postinstall skipifsilent
